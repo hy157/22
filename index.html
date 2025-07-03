@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Çiftlik Oyunu - Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    html,body {margin:0; padding:0;}
+    body {
+      min-height:100vh; min-width:100vw;
+      background: url(8.png) center/cover no-repeat;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      box-sizing: border-box;
+    }
+    #top-bar {
+      display: flex; align-items: center;
+      background:rgba(255,255,255,0.80); box-shadow:0 2px 10px #0001;
+      padding:10px 15px; border-bottom:2px solid #e5e5e5;
+      z-index:2; position:relative; gap:14px;
+      justify-content: flex-start;
+    }
+    #top-bar span, #top-bar img.icon {
+      display: flex; align-items:center; font-size:1.1em; font-weight:600;
+      background: #fff7; border-radius:18px; padding:2px 13px 2px 6px;
+      margin-right:3px;
+      border: 1.3px solid #bbb7;
+    }
+    #top-bar img.icon { width:28px; height:28px; margin-right:2px; background:none; padding:0; border:none;}
+    #main-content {display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:70vh;}
+    #field-area {margin-top:32px; min-height:200px; display:flex; justify-content:center;}
+    .field { position:relative; width:170px; }
+    .field-img { width:170px; height:110px; border-radius:19px; display:block; box-shadow:0 4px 20px #0002;}
+    .actions { position:absolute; left:0; right:0; bottom:10px; display:flex; justify-content:center; gap:18px; }
+    .action-btn { width:46px; height:46px; cursor:pointer; opacity:0.96; transition:opacity .13s;}
+    .action-btn:hover { opacity:1; transform:scale(1.05);}
+    .timer {text-align:center; margin:7px 0 0 0; font-size:1.11em; min-height:25px;}
+    .timer img {width:23px; vertical-align:middle; margin-right:3px;}
+    /* ALT BAR */
+    #bottom-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(255,255,255,0.95); box-shadow: 0 -1px 12px #0001;
+      padding: 7px 0 5px 0; z-index:10;
+      display:flex; justify-content:center; gap:28px; align-items:center;
+    }
+    #bottom-bar .bbtn {
+      background:none; border:none; outline:none;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      cursor:pointer; padding:6px 14px; transition:background .15s, transform .13s;
+      border-radius:14px;
+      font-size:1em; font-weight:600; color:#296010;
+    }
+    #bottom-bar .bbtn:active { background:#d8f3e7; transform:scale(0.97);}
+    #bottom-bar img { width:32px; height:32px; }
+    #bottom-bar span { font-size:0.98em; margin-top:2px;}
+    /* MODAL */
+    .modal-bg {
+      position:fixed; top:0;left:0;right:0;bottom:0;
+      background:rgba(0,0,0,0.24); display:none; justify-content:center; align-items:center; z-index:999;
+    }
+    .modal {
+      background:#fff; border-radius:18px; box-shadow:0 8px 32px #0003; min-width:220px;
+      max-width:90vw; padding:22px 22px 13px 22px; text-align:center; position:relative;
+      animation:popin .18s;
+    }
+    .modal img {width:54px; margin-bottom:8px;}
+    .closeBtn {
+      position:absolute; top:6px; right:13px; background:none; border:none; font-size:1.2em; color:#234;
+      cursor:pointer; font-weight:800;
+    }
+    @keyframes popin {0%{transform:scale(.83); opacity:0;} 100%{transform:scale(1); opacity:1;}}
+    @media (max-width:600px){
+      #field-area { margin-top:16px; }
+      .field { width:95vw; max-width:370px; }
+      .field-img { width:100%; }
+    }
+    body {padding-bottom:62px;} /* Alt bar için alan */
+  </style>
+</head>
+<body>
+  <div id="top-bar">
+    <span><img src="15.png" class="icon" alt="Para"> <b id="coin">100</b></span>
+    <span><img src="14.png" class="icon" alt="Enerji"> <b id="energy">100</b></span>
+    <span><img src="13.png" class="icon" alt="Elmas"> <b id="gem">100</b></span>
+  </div>
+  <div id="main-content">
+    <div id="field-area">
+      <div class="field" id="field0">
+        <img src="1.png" id="field-img0" class="field-img" alt="Tarla">
+        <div id="actions0" class="actions">
+          <img src="17.png" class="action-btn" id="seedBtn" title="Tohum ek" style="display:inline;">
+          <img src="19.png" class="action-btn" id="harvestBtn" title="Hasat et" style="display:none;">
+        </div>
+        <div class="timer" id="timer0"></div>
+      </div>
+    </div>
+  </div>
+  <div id="bottom-bar">
+    <button class="bbtn" id="depoBtn"><img src="5.png"><span>Depo</span></button>
+    <button class="bbtn" id="magazaBtn"><img src="6.png"><span>Mağaza</span></button>
+    <button class="bbtn" id="gorevBtn"><img src="7.png"><span>Görevler</span></button>
+    <button class="bbtn" id="ayarBtn"><img src="18.png"><span>Ayarlar</span></button>
+  </div>
+  <!-- MODAL -->
+  <div id="modalbg" class="modal-bg">
+    <div class="modal" id="modalBox">
+      <button class="closeBtn" onclick="modalKapat()">×</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+  <script>
+    // BASİT ÇİFTLİK OYUNU (1 tarla, sadece buğday)
+    let durum = {
+      coin: 100,
+      energy: 100,
+      gem: 100,
+      tarla: { durum: "empty", time: 0 }, // empty|growing|ready
+      growTotal: 30, // saniye
+      timer: null
+    };
+    function updateBar() {
+      document.getElementById("coin").innerText = durum.coin;
+      document.getElementById("energy").innerText = durum.energy;
+      document.getElementById("gem").innerText = durum.gem;
+    }
+    updateBar();
+    function updateField() {
+      let f = durum.tarla;
+      let img = document.getElementById("field-img0");
+      let seedBtn = document.getElementById("seedBtn");
+      let harvestBtn = document.getElementById("harvestBtn");
+      let timer = document.getElementById("timer0");
+      if(f.durum === "empty") {
+        img.src = "1.png";
+        seedBtn.style.display = "inline";
+        harvestBtn.style.display = "none";
+        timer.innerHTML = '';
+      } else if(f.durum === "growing") {
+        img.src = (f.time < durum.growTotal/2) ? "2.png" : "3.png";
+        seedBtn.style.display = "none";
+        harvestBtn.style.display = "none";
+        timer.innerHTML = `<img src="21.png"> <small>${durum.growTotal-f.time}s</small>`;
+      } else if(f.durum === "ready") {
+        img.src = "4.png";
+        seedBtn.style.display = "none";
+        harvestBtn.style.display = "inline";
+        timer.innerHTML = `<img src="21.png"> <small>Hazır!</small>`;
+      }
+    }
+    // Ekim başlat
+    document.getElementById("seedBtn").onclick = function() {
+      if(durum.tarla.durum !== "empty") return;
+      if(durum.energy < 1) { alert("Yeterli enerji yok!"); return; }
+      durum.tarla = { durum: "growing", time: 0 };
+      durum.energy -= 1;
+      updateBar();
+      updateField();
+      durum.timer = setInterval(tarlaTimer, 1000);
+    };
+    // Hasat et
+    document.getElementById("harvestBtn").onclick = function() {
+      if(durum.tarla.durum !== "ready") return;
+      durum.tarla = { durum: "empty", time: 0 };
+      durum.coin += 5; // Sabit ödül (örnek)
+      updateBar();
+      updateField();
+    };
+    // Zamanlayıcı
+    function tarlaTimer() {
+      if(durum.tarla.durum !== "growing") { clearInterval(durum.timer); return; }
+      durum.tarla.time += 1;
+      if(durum.tarla.time >= durum.growTotal) {
+        durum.tarla.durum = "ready";
+        clearInterval(durum.timer);
+      }
+      updateField();
+    }
+    updateField();
+
+    // MODAL sistemi
+    function modalGoster(img, baslik, aciklama) {
+      let content = "";
+      if(img) content += `<img src="${img}"><br>`;
+      if(baslik) content += `<h3>${baslik}</h3>`;
+      if(aciklama) content += `<div style="margin:5px 0 0 0">${aciklama}</div>`;
+      document.getElementById("modalContent").innerHTML = content;
+      document.getElementById("modalbg").style.display="flex";
+    }
+    function modalKapat() {
+      document.getElementById("modalbg").style.display="none";
+    }
+    // Alt bar butonlarını işle
+    document.getElementById("depoBtn").onclick = ()=>modalGoster("5.png","Depo","Depoda hiç ürün yok.");
+    document.getElementById("magazaBtn").onclick = ()=>modalGoster("6.png","Mağaza","Mağaza sistemin açılması için ürün eklemeniz gerek.");
+    document.getElementById("gorevBtn").onclick = ()=>modalGoster("7.png","Görevler","Henüz görev bulunmamaktadır.");
+    document.getElementById("ayarBtn").onclick = ()=>modalGoster("18.png","Ayarlar","Ayarlar yakında aktif olacak.");
+  </script>
+</body>
+</html>
