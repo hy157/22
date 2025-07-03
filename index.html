@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Çiftlik Oyunu</title>
+  <title>Akıllı Çiftlik Oyunu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     html,body {margin:0; padding:0;}
@@ -26,21 +26,21 @@
       border: 1.3px solid #bbb7;
     }
     #top-bar img.icon { width:28px; height:28px; margin-right:2px; background:none; padding:0; border:none;}
-    #main-content {display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:70vh;}
-    #field-area {margin-top:32px; min-height:200px; display:flex; justify-content:center;}
+    #main-content {display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:68vh;}
+    #field-area {margin-top:32px; min-height:180px; display:flex; justify-content:center; gap:19px;}
     .field {
       position:relative;
-      width:220px;
-      height:160px;
+      width:190px;
+      height:140px;
       display: flex;
       align-items: flex-end;
       justify-content: center;
       margin: auto;
     }
     .field-img {
-      width:210px;
-      height:120px;
-      border-radius:22px;
+      width:180px;
+      height:105px;
+      border-radius:19px;
       display:block;
       object-fit: cover;
       background: #efe7dd;
@@ -51,10 +51,11 @@
       position:absolute; left:0; right:0; bottom:20px;
       display:flex; justify-content:center; gap:18px; z-index:2;
     }
-    .action-btn { width:46px; height:46px; cursor:pointer; opacity:0.96; transition:opacity .13s;}
+    .action-btn { width:38px; height:38px; cursor:pointer; opacity:0.96; transition:opacity .13s;}
     .action-btn:hover { opacity:1; transform:scale(1.05);}
-    .timer {text-align:center; margin:7px 0 0 0; font-size:1.11em; min-height:25px;}
-    .timer img {width:23px; vertical-align:middle; margin-right:3px;}
+    .timer {text-align:center; margin:7px 0 0 0; font-size:1.05em; min-height:22px; color:#444;}
+    .timer img {width:18px; vertical-align:middle; margin-right:2px;}
+    small {font-size:0.90em; color:#666;}
     /* ALT BAR */
     #bottom-bar {
       position: fixed; bottom: 0; left: 0; right: 0;
@@ -70,8 +71,8 @@
       font-size:1em; font-weight:600; color:#296010;
     }
     #bottom-bar .bbtn:active { background:#d8f3e7; transform:scale(0.97);}
-    #bottom-bar img { width:32px; height:32px; }
-    #bottom-bar span { font-size:0.98em; margin-top:2px;}
+    #bottom-bar img { width:30px; height:30px; }
+    #bottom-bar span { font-size:0.97em; margin-top:2px;}
     /* MODAL */
     .modal-bg {
       position:fixed; top:0;left:0;right:0;bottom:0;
@@ -82,7 +83,7 @@
       max-width:95vw; padding:22px 22px 13px 22px; text-align:center; position:relative;
       animation:popin .18s;
     }
-    .modal img {width:54px; margin-bottom:8px;}
+    .modal img {width:45px; margin-bottom:8px;}
     .closeBtn {
       position:absolute; top:6px; right:13px; background:none; border:none; font-size:1.2em; color:#234;
       cursor:pointer; font-weight:800;
@@ -94,22 +95,40 @@
       width:100%; max-width:350px; justify-content:space-between;
     }
     .magaza-item:last-child { border-bottom: none; }
-    .magaza-item img {width:45px;}
+    .magaza-item img {width:34px;}
     .magaza-item button {
       background: #f8ffe8; border:1px solid #b9dfa8; color:#225f13;
-      border-radius:10px; padding:7px 16px; font-weight:700; font-size:1em;
+      border-radius:9px; padding:5px 15px; font-weight:700; font-size:1em;
       cursor:pointer; transition:background .15s;
     }
     .magaza-item button:active {background:#d8f3e7;}
+    .depo-list {margin-top:10px; display:flex; flex-direction:column; gap:7px;}
+    .depo-item { display:flex; align-items:center; gap:12px; justify-content:space-between; border-bottom:1px solid #f3f3f3; padding:3px 0;}
+    .depo-item:last-child {border-bottom:none;}
+    .depo-item img {width:22px;}
+    .depo-item button {
+      background:#fff5d8; border:1px solid #f6e6ba; color:#805a17;
+      border-radius:8px; font-size:0.99em; padding:2px 10px; cursor:pointer; font-weight:600;
+    }
+    .depo-item button:active {background:#e8f5d8;}
+    .well-panel {
+      margin-top:8px; background:#f8fff7; border-radius:10px; padding:11px; border:1px solid #cdf1ea; display:inline-block;
+    }
+    .well-panel img {vertical-align:middle;}
+    .well-panel button {
+      background:#e2fff8; border:1px solid #b9e1d8; color:#247a63;
+      border-radius:9px; padding:5px 14px; margin-left:7px; font-size:0.99em; font-weight:600; cursor:pointer;
+    }
+    .well-panel button:active {background:#cdf5e8;}
     @keyframes popin {0%{transform:scale(.83); opacity:0;} 100%{transform:scale(1); opacity:1;}}
     @media (max-width:600px){
-      #field-area { margin-top:16px; }
-      .field { width:95vw; max-width:370px; }
+      #field-area { margin-top:12px; }
+      .field { width:95vw; max-width:330px; }
       .field-img { width:100%; }
-      .modal { padding:12px 3vw; }
-      .magaza-item { max-width:95vw;}
+      .modal { padding:11px 2vw;}
+      .magaza-item {max-width:97vw;}
     }
-    body {padding-bottom:62px;}
+    body {padding-bottom:72px;}
   </style>
 </head>
 <body>
@@ -119,16 +138,7 @@
     <span><img src="13.png" class="icon" alt="Elmas"> <b id="gem">100</b></span>
   </div>
   <div id="main-content">
-    <div id="field-area">
-      <div class="field" id="field0">
-        <img src="1.png" id="field-img0" class="field-img" alt="Tarla">
-        <div id="actions0" class="actions">
-          <img src="17.png" class="action-btn" id="seedBtn" title="Tohum ek" style="display:inline;">
-          <img src="19.png" class="action-btn" id="harvestBtn" title="Hasat et" style="display:none;">
-        </div>
-        <div class="timer" id="timer0"></div>
-      </div>
-    </div>
+    <div id="field-area"></div>
   </div>
   <div id="bottom-bar">
     <button class="bbtn" id="depoBtn"><img src="5.png"><span>Depo</span></button>
@@ -144,123 +154,240 @@
     </div>
   </div>
   <script>
-    // OYUN DURUMU
+    // --- OYUN DEĞİŞKENLERİ
     let durum = {
       coin: 100,
       energy: 100,
       gem: 100,
-      tarla: { durum: "empty", time: 0 },
-      growTotal: 30,
-      timer: null
+      depot: { }, // ürün/miktar
+      tarlalar: [ { durum: "empty", time: 0, crop: null } ], // ilk başta 1 tarla
+      suKuyusu: { aktif:false, su:0, last:Date.now() },
+      degirmen: false,
+      firin: false
     };
+    // ÜRÜN VERİLERİ (süreler: zorluk, saniye)
+    let urunler = [
+      { ad:"Buğday", key:"bugday", sprite:"21.png", grow:30, fiyat:5 },
+      { ad:"Mısır", key:"misir", sprite:"20.png", grow:45, fiyat:8 },
+      { ad:"Domates", key:"domates", sprite:"12.png", grow:65, fiyat:14 }
+    ];
+    let unSprite = "12.png", ekmekSprite="9.png", suSprite="20.png";
+    // --- ARAYÜZ
     function updateBar() {
       document.getElementById("coin").innerText = durum.coin;
       document.getElementById("energy").innerText = durum.energy;
       document.getElementById("gem").innerText = durum.gem;
     }
-    updateBar();
-    function updateField() {
-      let f = durum.tarla;
-      let img = document.getElementById("field-img0");
-      let seedBtn = document.getElementById("seedBtn");
-      let harvestBtn = document.getElementById("harvestBtn");
-      let timer = document.getElementById("timer0");
-      if(f.durum === "empty") {
-        img.src = "1.png";
-        seedBtn.style.display = "inline";
-        harvestBtn.style.display = "none";
-        timer.innerHTML = '';
-      } else if(f.durum === "growing") {
-        img.src = (f.time < durum.growTotal/2) ? "2.png" : "3.png";
-        seedBtn.style.display = "none";
-        harvestBtn.style.display = "none";
-        timer.innerHTML = `<img src="21.png"> <small>${durum.growTotal-f.time}s</small>`;
-      } else if(f.durum === "ready") {
-        img.src = "4.png";
-        seedBtn.style.display = "none";
-        harvestBtn.style.display = "inline";
-        timer.innerHTML = `<img src="21.png"> <small>Hazır!</small>`;
-      }
+    // TARLA ÇİZ
+    function renderFields() {
+      let alan = document.getElementById("field-area");
+      alan.innerHTML = "";
+      durum.tarlalar.forEach((f, i)=>{
+        let urun = f.crop!=null ? urunler.find(u=>u.key===f.crop) : null;
+        let img = "1.png";
+        if(f.durum==="growing") img = (f.time<(urun.grow/2)) ? "2.png" : "3.png";
+        if(f.durum==="ready") img="4.png";
+        alan.innerHTML += `
+        <div class="field" id="field${i}">
+          <img src="${img}" class="field-img" id="field-img${i}">
+          <div class="actions" id="actions${i}">
+            <img src="17.png" class="action-btn" id="seedBtn${i}" title="Tohum ek" style="${f.durum==='empty'?'':'display:none;'}">
+            <img src="19.png" class="action-btn" id="harvestBtn${i}" title="Hasat et" style="${f.durum==='ready'?'':'display:none;'}">
+          </div>
+          <div class="timer" id="timer${i}">
+            ${f.durum==="growing"?`<img src="${urun.sprite}"> <small>${urun.ad} <span>${urun.grow-f.time}s</span></small>`:""}
+            ${f.durum==="ready"?`<img src="${urun.sprite}"> <small>Hazır!</small>`:""}
+          </div>
+        </div>`;
+      });
+      // Buton fonksiyonları ekle
+      durum.tarlalar.forEach((f, i)=>{
+        let urun = f.crop!=null ? urunler.find(u=>u.key===f.crop) : null;
+        let ek = document.getElementById("seedBtn"+i);
+        if(ek) ek.onclick = function() {
+          if(durum.energy<1) return alert("Yeterli enerji yok!");
+          durum.energy -= 1;
+          durum.tarlalar[i] = { durum:"growing", time:0, crop:"bugday" }; // örnek: sadece buğday eklenebilir (geliştirilebilir)
+          updateBar(); renderFields();
+        };
+        let hs = document.getElementById("harvestBtn"+i);
+        if(hs) hs.onclick = function() {
+          durum.depot[urun.ad] = (durum.depot[urun.ad]||0) + 1;
+          durum.tarlalar[i] = { durum:"empty", time:0, crop:null };
+          durum.coin += urun.fiyat; // direkt otomatik satma yoksa bu satırı kaldırabilirsin
+          updateBar(); renderFields();
+        };
+      });
     }
-    document.getElementById("seedBtn").onclick = function() {
-      if(durum.tarla.durum !== "empty") return;
-      if(durum.energy < 1) { alert("Yeterli enerji yok!"); return; }
-      durum.tarla = { durum: "growing", time: 0 };
-      durum.energy -= 1;
-      updateBar();
-      updateField();
-      durum.timer = setInterval(tarlaTimer, 1000);
-    };
-    document.getElementById("harvestBtn").onclick = function() {
-      if(durum.tarla.durum !== "ready") return;
-      durum.tarla = { durum: "empty", time: 0 };
-      durum.coin += 5;
-      updateBar();
-      updateField();
-    };
-    function tarlaTimer() {
-      if(durum.tarla.durum !== "growing") { clearInterval(durum.timer); return; }
-      durum.tarla.time += 1;
-      if(durum.tarla.time >= durum.growTotal) {
-        durum.tarla.durum = "ready";
-        clearInterval(durum.timer);
-      }
-      updateField();
-    }
-    updateField();
-    // MODAL sistemi
-    function modalGoster(img, baslik, aciklama) {
-      let content = "";
-      if(img) content += `<img src="${img}"><br>`;
-      if(baslik) content += `<h3>${baslik}</h3>`;
-      if(aciklama) content += `<div style="margin:5px 0 0 0">${aciklama}</div>`;
-      document.getElementById("modalContent").innerHTML = content;
+    // ---- MODAL sistemi
+    function modalGoster(html) {
+      document.getElementById("modalContent").innerHTML = html;
       document.getElementById("modalbg").style.display="flex";
     }
     function modalKapat() {
       document.getElementById("modalbg").style.display="none";
     }
-    document.getElementById("depoBtn").onclick = ()=>modalGoster("5.png","Depo","Depoda hiç ürün yok.");
-    document.getElementById("gorevBtn").onclick = ()=>modalGoster("7.png","Görevler","Henüz görev bulunmamaktadır.");
-    document.getElementById("ayarBtn").onclick = ()=>modalGoster("18.png","Ayarlar","Ayarlar yakında aktif olacak.");
-    // MAĞAZA
+    // --- MAĞAZA
     document.getElementById("magazaBtn").onclick = function() {
       let magazaHTML = `
       <div class="magaza-list">
         <div class="magaza-item">
           <img src="1.png"><b>Tarla</b>
-          <button onclick="satinal('tarla')">10 <img src='15.png' style='width:18px;vertical-align:middle'></button>
+          <button onclick="satinal('tarla')">10 <img src='15.png' style='width:15px;vertical-align:middle'></button>
         </div>
         <div class="magaza-item">
           <img src="22.png"><b>Fırın</b>
-          <button onclick="satinal('firin')">40 <img src='15.png' style='width:18px;vertical-align:middle'></button>
+          <button onclick="satinal('firin')">40 <img src='15.png' style='width:15px;vertical-align:middle'></button>
         </div>
         <div class="magaza-item">
           <img src="24.png"><b>Değirmen</b>
-          <button onclick="satinal('degirmen')">30 <img src='15.png' style='width:18px;vertical-align:middle'></button>
+          <button onclick="satinal('degirmen')">30 <img src='15.png' style='width:15px;vertical-align:middle'></button>
         </div>
         <div class="magaza-item">
           <img src="23.png"><b>Su Kuyusu</b>
-          <button onclick="satinal('sukuyusu')">20 <img src='15.png' style='width:18px;vertical-align:middle'></button>
+          <button onclick="satinal('sukuyusu')">20 <img src='15.png' style='width:15px;vertical-align:middle'></button>
         </div>
       </div>`;
-      document.getElementById("modalContent").innerHTML = "<h3>Mağaza</h3>" + magazaHTML;
-      document.getElementById("modalbg").style.display="flex";
+      modalGoster("<h3>Mağaza</h3>" + magazaHTML);
     };
-    // Satın alma fonksiyonu (sadece örnek, tarladan başka bir şey eklemiyor)
+    // Satın alma
     window.satinal = function(ne) {
       let fiyat = { "tarla":10, "firin":40, "degirmen":30, "sukuyusu":20 }[ne];
       if(durum.coin < fiyat) { alert("Yeterli paran yok!"); return; }
       durum.coin -= fiyat;
-      updateBar();
-      alert("Satın alındı: " + {
-        tarla:"Tarla",
-        firin:"Fırın",
-        degirmen:"Değirmen",
-        sukuyusu:"Su Kuyusu"
-      }[ne]);
-      modalKapat();
+      if(ne==="tarla") durum.tarlalar.push({ durum:"empty", time:0, crop:null });
+      if(ne==="firin") durum.firin=true;
+      if(ne==="degirmen") durum.degirmen=true;
+      if(ne==="sukuyusu") durum.suKuyusu.aktif=true;
+      updateBar(); renderFields(); modalKapat();
     }
+    // --- DEPO (ÜRÜN SAT)
+    document.getElementById("depoBtn").onclick = function() {
+      let depoHTML = `<h3>Depo</h3><div class="depo-list">`;
+      let dep = durum.depot;
+      let satF = function(ad,fiyat){
+        return `<button onclick="urunSat('${ad}',${fiyat})">Sat (${fiyat} <img src='15.png' style='width:14px;vertical-align:middle'>)</button>`;
+      };
+      let varMi = false;
+      Object.keys(dep).forEach(ad=>{
+        if(dep[ad]>0){
+          varMi=true;
+          let spr = (ad=="Buğday"?"21.png":ad=="Mısır"?"20.png":ad=="Domates"?"12.png":ad=="Un"?"12.png":ad=="Ekmek"?"9.png":ad=="Su"?"20.png":"");
+          let fiyat = ad=="Buğday"?5:ad=="Mısır"?8:ad=="Domates"?14:ad=="Un"?18:ad=="Ekmek"?35:ad=="Su"?3:1;
+          depoHTML += `<div class="depo-item"><img src="${spr}">${ad} <b>x${dep[ad]}</b> ${satF(ad,fiyat)}</div>`;
+        }
+      });
+      if(!varMi) depoHTML += `<div style="opacity:.75; font-size:.98em;">Depo boş</div>`;
+      depoHTML += "</div>";
+      modalGoster(depoHTML);
+    };
+    // Satış
+    window.urunSat = function(ad,fiyat){
+      if(!durum.depot[ad]||durum.depot[ad]<1) return;
+      durum.depot[ad]-=1;
+      durum.coin+=fiyat;
+      updateBar();
+      document.getElementById("depoBtn").click();
+    }
+    // -- GÖREV VE AYARLAR SADECE BİLGİ
+    document.getElementById("gorevBtn").onclick = ()=>modalGoster("<img src='7.png'><h3>Görevler</h3><div>Henüz görev bulunmamaktadır.</div>");
+    document.getElementById("ayarBtn").onclick = ()=>modalGoster("<img src='18.png'><h3>Ayarlar</h3><div>Ayarlar yakında aktif olacak.</div>");
+    // --- SU KUYUSU PANELİ
+    function showWell(){
+      let su = durum.suKuyusu.su;
+      let buton = `<button ${su==0?"disabled":""} onclick="suTopla()">Su Topla</button>`;
+      let info = `<div class='well-panel'><img src='23.png'> <b>Su Kuyusu</b> <br>
+      <small>Biriken Su: <b>${su}/10</b> &nbsp; (30sn'de 1 su, maks 10 birikir)</small><br>${buton}</div>`;
+      modalGoster(info);
+    }
+    window.suTopla = function(){
+      let su = durum.suKuyusu.su;
+      if(su>0){
+        durum.depot["Su"] = (durum.depot["Su"]||0) + su;
+        durum.suKuyusu.su = 0;
+        showWell();
+      }
+    }
+    // --- DEĞİRMEN & FIRIN PANELİ
+    function showDegirmen(){
+      let bugday = durum.depot["Buğday"]||0, un = durum.depot["Un"]||0;
+      let buton = `<button ${(bugday<1||durum.energy<1)?"disabled":""} onclick="unUret()">Un Üret (1 <img src='21.png'> 1 <img src='14.png'>)</button>`;
+      let info = `<div style='padding:7px;'><img src='24.png'> <b>Değirmen</b><br>
+      <small>1 Buğday + 1 Enerji = 1 Un</small><br>${buton}<br>
+      Depo: <img src='21.png'>${bugday} <img src='12.png'>${un}</div>`;
+      modalGoster(info);
+    }
+    window.unUret = function(){
+      if((durum.depot["Buğday"]||0)<1||durum.energy<1) return;
+      durum.depot["Buğday"]-=1;
+      durum.depot["Un"] = (durum.depot["Un"]||0)+1;
+      durum.energy -= 1;
+      showDegirmen(); updateBar();
+    }
+    function showFirin(){
+      let un = durum.depot["Un"]||0, su = durum.depot["Su"]||0, ekmek = durum.depot["Ekmek"]||0;
+      let buton = `<button ${(un<1||su<1||durum.energy<1)?"disabled":""} onclick="ekmekUret()">Ekmek Üret (1 <img src='12.png'> 1 <img src='20.png'> 1 <img src='14.png'>)</button>`;
+      let info = `<div style='padding:7px;'><img src='22.png'> <b>Fırın</b><br>
+      <small>1 Un + 1 Su + 1 Enerji = 1 Ekmek</small><br>${buton}<br>
+      Depo: <img src='12.png'>${un} <img src='20.png'>${su} <img src='9.png'>${ekmek}</div>`;
+      modalGoster(info);
+    }
+    window.ekmekUret = function(){
+      if((durum.depot["Un"]||0)<1||(durum.depot["Su"]||0)<1||durum.energy<1) return;
+      durum.depot["Un"]-=1; durum.depot["Su"]-=1;
+      durum.depot["Ekmek"]=(durum.depot["Ekmek"]||0)+1;
+      durum.energy -= 1;
+      showFirin(); updateBar();
+    }
+    // --- OYUN SAATİ: Su kuyusu ve tarlalar
+    setInterval(function(){
+      // Su kuyusu işle
+      if(durum.suKuyusu.aktif) {
+        let now = Date.now();
+        let delta = Math.floor((now - durum.suKuyusu.last)/1000);
+        if(delta >= 30 && durum.suKuyusu.su < 10) {
+          let ekle = Math.min(Math.floor(delta/30), 10-durum.suKuyusu.su);
+          durum.suKuyusu.su += ekle;
+          durum.suKuyusu.last = now - ((delta%30)*1000);
+        }
+      }
+      // Tarlalar büyüt
+      durum.tarlalar.forEach((f,i)=>{
+        if(f.durum=="growing"){
+          f.time+=1;
+          let u = urunler.find(u=>u.key===f.crop);
+          if(f.time>=u.grow) { f.durum="ready"; }
+        }
+      });
+      renderFields();
+    },1000);
+    // --- Başlangıçta
+    renderFields(); updateBar();
+    // --- Su Kuyusu, Fırın, Değirmen aktifse panel açmak için alt bar'a ekle
+    setInterval(function(){
+      let alt = document.getElementById("bottom-bar");
+      if(!document.getElementById("wellBtn") && durum.suKuyusu.aktif){
+        let btn = document.createElement("button");
+        btn.className = "bbtn"; btn.id = "wellBtn";
+        btn.innerHTML = `<img src="23.png"><span>Su Kuyusu</span>`;
+        btn.onclick = showWell;
+        alt.insertBefore(btn, alt.children[1]);
+      }
+      if(!document.getElementById("degirmenBtn") && durum.degirmen){
+        let btn = document.createElement("button");
+        btn.className = "bbtn"; btn.id = "degirmenBtn";
+        btn.innerHTML = `<img src="24.png"><span>Değirmen</span>`;
+        btn.onclick = showDegirmen;
+        alt.insertBefore(btn, alt.children[2]);
+      }
+      if(!document.getElementById("firinBtn") && durum.firin){
+        let btn = document.createElement("button");
+        btn.className = "bbtn"; btn.id = "firinBtn";
+        btn.innerHTML = `<img src="22.png"><span>Fırın</span>`;
+        btn.onclick = showFirin;
+        alt.insertBefore(btn, alt.children[3]);
+      }
+    },700);
   </script>
 </body>
 </html>
